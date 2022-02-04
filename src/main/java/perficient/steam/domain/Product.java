@@ -10,10 +10,13 @@ public class Product {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
-
+    @Column
     private String name;
+    @Column
     private BigDecimal price;
+    @Column
     private double discount;
+    @Column
     private String description;
 
     public Product() {

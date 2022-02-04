@@ -39,7 +39,7 @@ public class Bootstrap implements CommandLineRunner {
 
             games.add(new Videogame("game_" + i, new BigDecimal(1000) ,0, "description" , "FPS" , Arrays.asList("Xbox" ,"Play","PC")));
             consoles.add(new Console("console_" + i , new BigDecimal(1000) , 0 , "description"));
-            users.add(new User(124356789,"user_" + i ,"109284309123" , "F" ));
+            users.add(new User(124356789,"user_" + i ,"109284309123" , "F" , "a@mail.com" ));
         }
         List<Product> products = new ArrayList<>();
         products.addAll(games);
@@ -54,8 +54,8 @@ public class Bootstrap implements CommandLineRunner {
         videogameRepository.saveAll(games);
         consoleRepository.saveAll(consoles);
         userRepository.saveAll(users);
-
         saleRepository.save(sale);
+
 
 
 

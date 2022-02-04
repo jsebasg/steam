@@ -1,74 +1,52 @@
 package perficient.steam.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import perficient.steam.domain.Console;
-import perficient.steam.domain.Product;
-import perficient.steam.domain.Sale;
-import perficient.steam.domain.User;
+
 import perficient.steam.dto.SaleDto;
-import perficient.steam.repositories.ProductRepository;
-import perficient.steam.repositories.SaleRepository;
-import perficient.steam.repositories.UserRepository;
+
+import perficient.steam.service.serviceImpl.SaleServiceImpl;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping( "/v1/steam/sale" )
 public class SaleController  {
-    private final SaleRepository saleRepository;
-    private final ProductRepository productRepository;
-    private final UserRepository userRepository;
+    @Autowired
+    private SaleServiceImpl saleServiceImpl;
 
-    public SaleController(SaleRepository saleRepository, ProductRepository productRepository, UserRepository userRepository) {
-        this.saleRepository = saleRepository;
-        this.productRepository = productRepository;
-        this.userRepository = userRepository;
-    }
 
+    
     @GetMapping
-    public  ResponseEntity<List<Sale>> getAll() {
-        return new ResponseEntity<List<Sale>>((List<Sale>) saleRepository.findAll(), HttpStatus.OK );
+    public ResponseEntity<List<SaleDto>> getAll() {
+        return new ResponseEntity<List<SaleDto>>(saleServiceImpl.getAll() , HttpStatus.OK );
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Sale> findById(@PathVariable  long id) {
-        if(!saleRepository.existsById(id)) return new ResponseEntity<Sale>(HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<Sale>(saleRepository.findById(id).get() , HttpStatus.OK);
+    public ResponseEntity<SaleDto> findById(@PathVariable  long id) {
+        Optional<SaleDto> sale = saleServiceImpl.findById(id);
+
+        return sale.isPresent() ? new ResponseEntity<SaleDto>( sale.get(),HttpStatus.OK):new ResponseEntity<SaleDto>(HttpStatus.BAD_REQUEST);
     }
 
-
     @PostMapping
-    public ResponseEntity<Sale> create(@RequestBody SaleDto saleDto) {
-        List<Product> products = new ArrayList<>();
-        saleDto.getProducts().forEach(s -> products.add(productRepository.findById(s).get() ));
-        Sale sale = new Sale( products, userRepository.findById(saleDto.getUser()).get() , LocalDateTime.now() );
-        return new ResponseEntity<Sale>(saleRepository.save(sale) , HttpStatus.OK);
+    public ResponseEntity<SaleDto> create(@RequestBody SaleDto saleDto) {
+        return new ResponseEntity<SaleDto>(saleServiceImpl.create(saleDto) , HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Sale> update(@RequestBody SaleDto saleDto, @PathVariable long id) {
-        if(!saleRepository.existsById(id)) return new ResponseEntity<Sale>(HttpStatus.BAD_REQUEST);
-
-        List<Product> products = new ArrayList<>();
-        saleDto.getProducts().forEach(s -> products.add(productRepository.findById(s).get() ));
-        User user = userRepository.findById(saleDto.getUser()).get();
-
-        Sale actualSale = saleRepository.findById(id).get();
-        actualSale.setProducts(products);
-        actualSale.setUser(user);
-        actualSale.setDate(LocalDateTime.now());
-
-        return new ResponseEntity<Sale>(saleRepository.save(actualSale) , HttpStatus.OK);
+    public ResponseEntity<SaleDto> update(@RequestBody SaleDto saleDto, @PathVariable long id) {
+        Optional<SaleDto> sale = saleServiceImpl.findById(id);
+        return sale.isPresent() ? new ResponseEntity<SaleDto>( saleServiceImpl.update(saleDto,id).get(),HttpStatus.OK):new ResponseEntity<SaleDto>(HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> delete(@PathVariable long id) {
-        if(!saleRepository.existsById(id)) return new ResponseEntity<Boolean>( false, HttpStatus.BAD_REQUEST);
-        saleRepository.delete(saleRepository.findById(id).get());
-        return new ResponseEntity<Boolean>( true, HttpStatus.OK);
+    public ResponseEntity<Boolean> delete(@PathVariable long id) throws Exception {
+        return saleServiceImpl.deleteById(id) ?  new ResponseEntity<Boolean>(  HttpStatus.OK) : new ResponseEntity<Boolean>(  HttpStatus.BAD_REQUEST);
     }
 }

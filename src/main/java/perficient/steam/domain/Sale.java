@@ -22,7 +22,9 @@ public class Sale implements Serializable {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Column
     private LocalDateTime date;
+    @Column
     private BigDecimal total;
 
 
@@ -31,6 +33,7 @@ public class Sale implements Serializable {
 
     public Sale(List<Product> products, User user, LocalDateTime date) {
         this.products = products;
+
         this.user = user;
         this.date = date;
         total = new BigDecimal(0) ;

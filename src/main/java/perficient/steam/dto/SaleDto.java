@@ -11,6 +11,15 @@ public class SaleDto {
 
     private List<Long> products;
     private Long user;
+    private Long id;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public List<Long> getProducts() {
         return products;

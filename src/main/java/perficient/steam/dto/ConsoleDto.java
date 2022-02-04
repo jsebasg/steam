@@ -7,6 +7,15 @@ public class ConsoleDto {
     private BigDecimal price;
     private double discount;
     private String description;
+    private Long id;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;

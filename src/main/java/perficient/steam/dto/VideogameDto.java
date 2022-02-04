@@ -11,6 +11,15 @@ public class VideogameDto {
     private String description;
     private String category ;
     private List<String> compatibility;
+    private Long id;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;

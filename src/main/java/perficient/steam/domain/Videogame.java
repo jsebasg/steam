@@ -10,6 +10,7 @@ public class Videogame extends Product {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
+    @Column
     private String category ;
 
     @ElementCollection

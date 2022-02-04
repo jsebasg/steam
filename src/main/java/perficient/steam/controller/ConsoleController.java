@@ -1,63 +1,49 @@
 package perficient.steam.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import perficient.steam.domain.Console;
 import perficient.steam.dto.ConsoleDto;
 import perficient.steam.repositories.ConsoleRepository;
+import perficient.steam.service.serviceImpl.ConsoleServiceImpl;
+
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping( "/v1/steam/console" )
 public class ConsoleController{
-    private final ConsoleRepository consoleRepository;
-
-    public ConsoleController(ConsoleRepository consoleRepository) {
-        this.consoleRepository = consoleRepository;
-    }
+    @Autowired
+    ConsoleServiceImpl consoleServiceImpl;
 
     @GetMapping
-    public ResponseEntity<List<Console>> getAll() {
-        return new ResponseEntity<List<Console>>((List<Console>) consoleRepository.findAll(), HttpStatus.OK );
-
+    public ResponseEntity<List<ConsoleDto>> getAll() {
+        return new ResponseEntity<List<ConsoleDto>>(consoleServiceImpl.getAll() , HttpStatus.OK );
     }
-
 
     @GetMapping("/{id}")
-    public ResponseEntity<Console> findById(@PathVariable long id ) {
-        if(!consoleRepository.existsById(id)) return new ResponseEntity<Console>(HttpStatus.BAD_REQUEST );
-        return new ResponseEntity<Console>(consoleRepository.findById(id).get() , HttpStatus.OK );
+    public ResponseEntity<ConsoleDto> findById(@PathVariable  long id) {
+        Optional<ConsoleDto> console = consoleServiceImpl.findById(id);
+        return console.isPresent() ? new ResponseEntity<ConsoleDto>( console.get(),HttpStatus.OK):new ResponseEntity<ConsoleDto>(HttpStatus.BAD_REQUEST);
     }
 
-
     @PostMapping
-    public ResponseEntity<Console> create( @RequestBody ConsoleDto consoleDto ) {
-        Console console = new Console(consoleDto.getName() , consoleDto.getPrice() , consoleDto.getDiscount() , consoleDto.getDescription());
-        return new ResponseEntity<Console>(consoleRepository.save(console), HttpStatus.OK );
+    public ResponseEntity<ConsoleDto> create(@RequestBody ConsoleDto consoleDto) {
+        return new ResponseEntity<ConsoleDto>(consoleServiceImpl.create(consoleDto) , HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Console> update( @RequestBody ConsoleDto consoleDto, @PathVariable long id ) {
-        if(!consoleRepository.existsById(id)) return new ResponseEntity<Console>(HttpStatus.BAD_REQUEST );
-        Console actualConsole  = consoleRepository.findById(id).get();
-        actualConsole.setDescription(consoleDto.getDescription());
-        actualConsole.setDiscount(consoleDto.getDiscount());
-        actualConsole.setName(consoleDto.getName());
-        actualConsole.setPrice(consoleDto.getPrice());
-        return new ResponseEntity<Console>(consoleRepository.save(actualConsole), HttpStatus.OK );
+    public ResponseEntity<ConsoleDto> update(@RequestBody ConsoleDto consoleDto, @PathVariable long id) {
+        Optional<ConsoleDto> console = consoleServiceImpl.findById(id);
+        return console.isPresent() ? new ResponseEntity<ConsoleDto>( consoleServiceImpl.update(consoleDto,id).get(),HttpStatus.OK):new ResponseEntity<ConsoleDto>(HttpStatus.BAD_REQUEST);
     }
 
-
-
     @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> delete(@PathVariable long id ){
-        if(!consoleRepository.existsById(id)) return new ResponseEntity<Boolean>( false, HttpStatus.BAD_REQUEST );
-
-        consoleRepository.delete(consoleRepository.findById(id).get());
-        return new ResponseEntity<Boolean>( true, HttpStatus.OK );
-
+    public ResponseEntity<Boolean> delete(@PathVariable long id) throws Exception {
+        return consoleServiceImpl.deleteById(id) ?  new ResponseEntity<Boolean>(  HttpStatus.OK) : new ResponseEntity<Boolean>(  HttpStatus.BAD_REQUEST);
     }
     
 }

@@ -8,6 +8,7 @@ import perficient.steam.exceptions.UserNotFoundException;
 import perficient.steam.repositories.UserRepository;
 import perficient.steam.service.UserService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,29 +17,43 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
-
     @Override
-    public User create(UserDto userDto) {
-        User user = new User(userDto.getIdentificationCard() , userDto.getName() , userDto.getContactNumber() , userDto.getGender());
+    public UserDto create(UserDto userDto) {
+        User user = new User(userDto.getIdentificationCard() , userDto.getName() , userDto.getContactNumber() , userDto.getGender() , userDto.getEmail());
         userRepository.save(user);
-        return user;
+        userDto.setId(user.getId());
+        return userToUserDto(user);
+    }
+    @Override
+    public Optional<UserDto> update(UserDto userDto, Long id) {
+        Optional<User> actualUser = userRepository.findById(id);
+        if(actualUser.isPresent()) {
+            actualUser.get().setContactNumber(userDto.getContactNumber());
+            actualUser.get().setGender(userDto.getGender());
+            actualUser.get().setName(userDto.getName());
+            actualUser.get().setIdentificationCard(userDto.getIdentificationCard());
+            return Optional.of(userToUserDto(actualUser.get()));
+        }
+        throw  new UserNotFoundException("USER NOT FOUND EXCEPTION");
     }
 
-    @Override
-    public Optional<User> findById(Long id) {
-        Optional<User> user = userRepository.findById(id);
-        if(user.isPresent()) return user;
 
+    @Override
+    public Optional<UserDto> findById(Long id) {
+        Optional<User> user =userRepository.findById(id);
+        if(user.isPresent()) return Optional.of(userToUserDto(user.get()));
         throw new UserNotFoundException("USER NOT FOUND EXCEPTION");
     }
 
     @Override
-    public List<User> getAll() {
-        return (List<User>) userRepository.findAll();
+    public List<UserDto> getAll() {
+        List<UserDto> users = new ArrayList<>();
+        userRepository.findAll().forEach(s -> users.add(userToUserDto(s)));
+        return users ;
     }
 
     @Override
-    public Boolean deleteById(Long id) throws Exception {
+    public Boolean deleteById(Long id){
         Optional<User> actualUser = userRepository.findById(id);
         if(actualUser.isPresent()) {
             userRepository.deleteById(id);
@@ -47,19 +62,15 @@ public class UserServiceImpl implements UserService {
         return false;
     }
 
-    @Override
-    public Optional<User> update(UserDto userDto, Long id) {
-        Optional<User> actualUser = userRepository.findById(id);
-        if(actualUser.isPresent()) {
-            actualUser.get().setContactNumber(userDto.getContactNumber());
-            actualUser.get().setGender(userDto.getGender());
-            actualUser.get().setName(userDto.getName());
-            actualUser.get().setIdentificationCard(userDto.getIdentificationCard());
-            return actualUser;
-        }
-        throw  new UserNotFoundException("USER NOT FOUND EXCEPTION");
+    private UserDto userToUserDto(User user){
+        UserDto userDto = new UserDto();
+        userDto.setId(user.getId());
+        userDto.setEmail(user.getEmail());
+        userDto.setContactNumber(user.getContactNumber());
+        userDto.setGender(user.getGender());
+        userDto.setIdentificationCard(user.getIdentificationCard());
+        userDto.setName(user.getName());
+        return userDto;
     }
-
-
 
 }

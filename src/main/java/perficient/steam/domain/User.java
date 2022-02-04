@@ -7,11 +7,16 @@ public class User {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
-
+    @Column
     private int identificationCard;
+    @Column
     private String name;
+    @Column
     private String contactNumber;
+    @Column
     private String gender;
+    @Column
+    private String email;
 
     @OneToMany(mappedBy="user")
     private List<Sale> sales ;
@@ -25,13 +30,21 @@ public class User {
 
 
 
-    public User(int identificationCard , String name, String contactNumber, String gender){
+    public User(int identificationCard , String name, String contactNumber, String gender, String email){
         this.contactNumber = contactNumber;
         this.identificationCard = identificationCard;
         this.gender = gender;
         this.name = name ;
+        this.email = email;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     public Long getId() {
         return id;
