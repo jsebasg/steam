@@ -1,13 +1,13 @@
 package perficient.steam.controller;
 
-import org.apache.logging.log4j.util.PerformanceSensitive;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import perficient.steam.dto.UserDto;
 import perficient.steam.service.serviceImpl.UserServiceImpl;
-
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,12 +29,12 @@ public class UserController{
     }
 
     @PostMapping
-    public ResponseEntity<UserDto> create(@RequestBody UserDto userDto) {
+    public ResponseEntity<UserDto> create(@Valid @RequestBody UserDto userDto) {
         return new ResponseEntity<UserDto>(userServiceImpl.create(userDto) , HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDto> update(@RequestBody UserDto userDto, @PathVariable long id) {
+    public ResponseEntity<UserDto> update(@Valid @RequestBody UserDto userDto, @PathVariable long id) {
         Optional<UserDto> user = userServiceImpl.findById(id);
         return user.isPresent() ? new ResponseEntity<UserDto>( userServiceImpl.update(userDto,id).get(),HttpStatus.OK):new ResponseEntity<UserDto>(HttpStatus.BAD_REQUEST);
     }

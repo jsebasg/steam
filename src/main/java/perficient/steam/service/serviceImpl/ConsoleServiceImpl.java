@@ -3,9 +3,8 @@ package perficient.steam.service.serviceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import perficient.steam.domain.Console;
-import perficient.steam.domain.Console;
 import perficient.steam.dto.ConsoleDto;
-import perficient.steam.exceptions.ConsoleNotFoundException;
+import perficient.steam.exceptions.NotFoundException;
 import perficient.steam.repositories.ConsoleRepository;
 import perficient.steam.service.ConsoleService;
 
@@ -36,14 +35,14 @@ public class ConsoleServiceImpl implements ConsoleService {
             actualConsole.get().setDescription(consoleDto.getDescription()); 
             return Optional.of(consoleToConsoleDto(actualConsole.get()));
         }
-        throw new ConsoleNotFoundException("CONSOLE NOT FOUND EXCEPTION"); 
+        throw new NotFoundException("CONSOLE NOT FOUND EXCEPTION");
     }
 
     @Override
     public Optional<ConsoleDto> findById(Long id) {
         Optional<Console> console =consoleRepository.findById(id);
         if(console.isPresent()) return Optional.of(consoleToConsoleDto(console.get()));
-        throw new ConsoleNotFoundException("CONSOLE NOT FOUND EXCEPTION");
+        throw new NotFoundException("CONSOLE NOT FOUND EXCEPTION");
     }
 
     @Override
@@ -60,7 +59,8 @@ public class ConsoleServiceImpl implements ConsoleService {
             consoleRepository.deleteById(id);
             return true;
         }
-        return false;
+
+        throw new NotFoundException("CONSOLE NOT FOUND EXCEPTION ");
     }
 
     private ConsoleDto consoleToConsoleDto(Console console){

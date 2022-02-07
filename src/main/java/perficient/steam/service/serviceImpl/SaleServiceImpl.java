@@ -6,8 +6,7 @@ import perficient.steam.domain.Sale;
 import perficient.steam.domain.Product;
 import perficient.steam.domain.User;
 import perficient.steam.dto.SaleDto;
-import perficient.steam.exceptions.SaleNotFoundException;
-import perficient.steam.exceptions.UserNotFoundException;
+import perficient.steam.exceptions.NotFoundException;
 import perficient.steam.repositories.ProductRepository;
 import perficient.steam.repositories.SaleRepository;
 import perficient.steam.repositories.UserRepository;
@@ -36,7 +35,7 @@ public class SaleServiceImpl implements SaleService {
     public Optional<SaleDto> findById(Long id) {
         Optional<Sale> sale =saleRepository.findById(id);
         if(sale.isPresent()) return Optional.of(saleToSaleDto(sale.get()));
-        throw new SaleNotFoundException("SALE NOT FOUND EXCEPTION");
+        throw new NotFoundException("SALE NOT FOUND EXCEPTION");
     }
 
     @Override
@@ -56,7 +55,7 @@ public class SaleServiceImpl implements SaleService {
             saleRepository.deleteById(id);
             return true;
         }
-        return false;
+        throw new NotFoundException("SALE NOT FOUND EXCEPTION");
     }
 
 
@@ -70,7 +69,7 @@ public class SaleServiceImpl implements SaleService {
 
             return Optional.of(saleToSaleDto(actualSale.get()));
         }
-        throw  new SaleNotFoundException("SALE NOT FOUND EXCEPTION");
+        throw  new NotFoundException("SALE NOT FOUND EXCEPTION");
     }
     private SaleDto saleToSaleDto(Sale sale){
 
@@ -88,12 +87,9 @@ public class SaleServiceImpl implements SaleService {
 
         List<Product> products = new ArrayList<>();
 
-
         saleDto.getProducts().forEach( s -> {
-
             if(productRepository.existsById(s)){
                 products.add(productRepository.findById(s).get());
-
             }
         });
 
@@ -106,7 +102,7 @@ public class SaleServiceImpl implements SaleService {
         if(userRepository.existsById(saleDto.getUser())){
             user = userRepository.findById(saleDto.getUser()).get();
         }else {
-            throw new UserNotFoundException("USER NOT FOUND ON SALE");
+            throw new NotFoundException("USER NOT FOUND ON SALE");
         }
 
         return user;

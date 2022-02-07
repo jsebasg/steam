@@ -19,9 +19,18 @@ public class Videogame extends Product {
     public Videogame() {
     }
 
-    public Videogame(String name, BigDecimal price, double discount, String description, String category, List<String> compatibility) {
+    public Videogame(String name, BigDecimal price, double discount, String description, String category , List<String> compatibility) {
         super(name, price, discount, description);
         this.category = category;
+        this.compatibility = compatibility;
+    }
+
+    public List<String> getCompatibility() {
+
+        return compatibility;
+    }
+
+    public void setCompatibility(List<String> compatibility) {
         this.compatibility = compatibility;
     }
 
@@ -31,14 +40,6 @@ public class Videogame extends Product {
 
     public void setCategory(String category) {
         this.category = category;
-    }
-
-    public List<String> getCompatibility() {
-        return compatibility;
-    }
-
-    public void setCompatibility(List<String> compatibility) {
-        this.compatibility = compatibility;
     }
 
     public Long getId() {

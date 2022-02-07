@@ -30,17 +30,19 @@ public class Bootstrap implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        //Administrator admin = new Administrator(1234567,"jose pepe" , "+57 000 0000000" , "M");
+        /*//Administrator admin = new Administrator(1234567,"jose pepe" , "+57 000 0000000" , "M");
         ArrayList<Videogame> games = new ArrayList<Videogame>();
         ArrayList<Console> consoles = new ArrayList<Console>();
 
         ArrayList<User> users = new ArrayList<User>();
         for(int i = 0 ; i< 4 ; i++ ){
 
-            games.add(new Videogame("game_" + i, new BigDecimal(1000) ,0, "description" , "FPS" , Arrays.asList("Xbox" ,"Play","PC")));
+            games.add(new Videogame("game_" + i, new BigDecimal(1000) ,0, "description" , "FPS" ));
             consoles.add(new Console("console_" + i , new BigDecimal(1000) , 0 , "description"));
-            users.add(new User(124356789,"user_" + i ,"109284309123" , "F" , "a@mail.com" ));
+
         }
+        users.add(new User(124356789,"user_" + 0 ,"109284309123" , "F" , "a@mail.com", "" ));
+
         List<Product> products = new ArrayList<>();
         products.addAll(games);
         products.addAll(consoles);
@@ -55,6 +57,8 @@ public class Bootstrap implements CommandLineRunner {
         consoleRepository.saveAll(consoles);
         userRepository.saveAll(users);
         saleRepository.save(sale);
+        */
+
 
 
 

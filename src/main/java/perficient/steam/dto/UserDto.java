@@ -3,15 +3,38 @@ package perficient.steam.dto;
 import perficient.steam.domain.Sale;
 
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.List;
 
+
 public class UserDto {
+    @NotNull(message = "The ID of the user cannot be null")
     private int identificationCard;
+    @NotNull(message = "The name of the user cannot be null")
     private String name;
+    @NotNull(message = "The contact number of the user cannot be null")
     private String contactNumber;
+    @NotNull(message = "The gender of the user cannot be null")
+    @Pattern(regexp = "^[MF]" , message = "The gender must be M (male) or F (female) ")
     private String gender;
+    @NotNull(message = "The email of the user cannot be null")
+    @Pattern(regexp = ".*@.*" , message = "The email must contains the @ caracter")
     private String email;
+    @NotNull(message = "The password of the user cannot be null")
+    @Size(min = 8 , message = "The length of the passwod must be > 8 ")
+    private String password;
+
     private Long id;
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public Long getId() {
         return id;

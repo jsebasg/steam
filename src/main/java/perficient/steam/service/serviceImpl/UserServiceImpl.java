@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import perficient.steam.domain.User;
 import perficient.steam.dto.UserDto;
-import perficient.steam.exceptions.UserNotFoundException;
+import perficient.steam.exceptions.NotFoundException;
 import perficient.steam.repositories.UserRepository;
 import perficient.steam.service.UserService;
 
@@ -19,11 +19,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto create(UserDto userDto) {
-        User user = new User(userDto.getIdentificationCard() , userDto.getName() , userDto.getContactNumber() , userDto.getGender() , userDto.getEmail());
+
+        User user = new User(userDto.getIdentificationCard() , userDto.getName() , userDto.getContactNumber() , userDto.getGender() , userDto.getEmail() , userDto.getPassword());
         userRepository.save(user);
         userDto.setId(user.getId());
         return userToUserDto(user);
+
+
     }
+
     @Override
     public Optional<UserDto> update(UserDto userDto, Long id) {
         Optional<User> actualUser = userRepository.findById(id);
@@ -32,9 +36,10 @@ public class UserServiceImpl implements UserService {
             actualUser.get().setGender(userDto.getGender());
             actualUser.get().setName(userDto.getName());
             actualUser.get().setIdentificationCard(userDto.getIdentificationCard());
+            actualUser.get().setPassword(userDto.getPassword());
             return Optional.of(userToUserDto(actualUser.get()));
         }
-        throw  new UserNotFoundException("USER NOT FOUND EXCEPTION");
+        throw  new NotFoundException("USER NOT FOUND EXCEPTION");
     }
 
 
@@ -42,7 +47,7 @@ public class UserServiceImpl implements UserService {
     public Optional<UserDto> findById(Long id) {
         Optional<User> user =userRepository.findById(id);
         if(user.isPresent()) return Optional.of(userToUserDto(user.get()));
-        throw new UserNotFoundException("USER NOT FOUND EXCEPTION");
+        throw new NotFoundException("USER NOT FOUND EXCEPTION");
     }
 
     @Override
@@ -59,7 +64,7 @@ public class UserServiceImpl implements UserService {
             userRepository.deleteById(id);
             return true;
         }
-        return false;
+        throw new NotFoundException("USER NOT FOUND EXCEPTION");
     }
 
     private UserDto userToUserDto(User user){
@@ -70,6 +75,7 @@ public class UserServiceImpl implements UserService {
         userDto.setGender(user.getGender());
         userDto.setIdentificationCard(user.getIdentificationCard());
         userDto.setName(user.getName());
+        userDto.setPassword(user.getPassword());
         return userDto;
     }
 

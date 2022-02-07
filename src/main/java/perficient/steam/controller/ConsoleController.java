@@ -4,12 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import perficient.steam.domain.Console;
 import perficient.steam.dto.ConsoleDto;
-import perficient.steam.repositories.ConsoleRepository;
 import perficient.steam.service.serviceImpl.ConsoleServiceImpl;
-
-
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,19 +28,20 @@ public class ConsoleController{
     }
 
     @PostMapping
-    public ResponseEntity<ConsoleDto> create(@RequestBody ConsoleDto consoleDto) {
+    public ResponseEntity<ConsoleDto> create(@Valid  @RequestBody ConsoleDto consoleDto) {
         return new ResponseEntity<ConsoleDto>(consoleServiceImpl.create(consoleDto) , HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ConsoleDto> update(@RequestBody ConsoleDto consoleDto, @PathVariable long id) {
+    public ResponseEntity<ConsoleDto> update(@Valid @RequestBody ConsoleDto consoleDto, @PathVariable long id) {
         Optional<ConsoleDto> console = consoleServiceImpl.findById(id);
         return console.isPresent() ? new ResponseEntity<ConsoleDto>( consoleServiceImpl.update(consoleDto,id).get(),HttpStatus.OK):new ResponseEntity<ConsoleDto>(HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> delete(@PathVariable long id) throws Exception {
-        return consoleServiceImpl.deleteById(id) ?  new ResponseEntity<Boolean>(  HttpStatus.OK) : new ResponseEntity<Boolean>(  HttpStatus.BAD_REQUEST);
+    public ResponseEntity delete(@PathVariable long id) throws Exception {
+        //ResponseEntity.ok()
+        return consoleServiceImpl.deleteById(id) ?  new ResponseEntity(  HttpStatus.OK) : new ResponseEntity<Boolean>(  HttpStatus.BAD_REQUEST);
     }
     
 }

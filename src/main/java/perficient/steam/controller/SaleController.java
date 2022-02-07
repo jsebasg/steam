@@ -4,13 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import perficient.steam.dto.SaleDto;
-
 import perficient.steam.service.serviceImpl.SaleServiceImpl;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,12 +31,13 @@ public class SaleController  {
     }
 
     @PostMapping
-    public ResponseEntity<SaleDto> create(@RequestBody SaleDto saleDto) {
+    //@Valid <-
+    public ResponseEntity<SaleDto> create(@Valid @RequestBody SaleDto saleDto) {
         return new ResponseEntity<SaleDto>(saleServiceImpl.create(saleDto) , HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SaleDto> update(@RequestBody SaleDto saleDto, @PathVariable long id) {
+    public ResponseEntity<SaleDto> update(@Valid @RequestBody SaleDto saleDto, @PathVariable long id) {
         Optional<SaleDto> sale = saleServiceImpl.findById(id);
         return sale.isPresent() ? new ResponseEntity<SaleDto>( saleServiceImpl.update(saleDto,id).get(),HttpStatus.OK):new ResponseEntity<SaleDto>(HttpStatus.BAD_REQUEST);
     }

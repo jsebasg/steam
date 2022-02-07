@@ -1,16 +1,27 @@
 package perficient.steam.dto;
 
 import javax.persistence.ElementCollection;
+import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.List;
 
 public class VideogameDto {
+    @NotNull(message = "The name of the Videogame cannot be null")
     private String name;
+    @NotNull(message = "The name of the Videogame cannot be null")
+    @Min(value = 0L, message = "The value must be positive")
     private BigDecimal price;
+    @Min(value = 0L, message = "The discount of the Videogame must be positive")
+    @Max(value = 1 , message = "The discount of the Videogame must be < 1")
     private double discount;
+    @NotNull(message = "The description of the Videogame cannot be null ")
     private String description;
+    @NotNull(message = "The category of the Videogame cannot be null")
     private String category ;
+    @NotNull(message = "The compatibility of the Videogame cannot be null")
+    @Size(min = 1 , message = "The compatibility must contain at least 1 element")
     private List<String> compatibility;
+
     private Long id;
 
     public Long getId() {

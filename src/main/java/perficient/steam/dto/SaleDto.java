@@ -1,16 +1,19 @@
 package perficient.steam.dto;
 
-import perficient.steam.domain.Product;
-import perficient.steam.domain.User;
-import javax.persistence.*;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+
+
+import javax.validation.constraints.*;
+
+
 import java.util.List;
 
 public class SaleDto {
-
+    @NotNull(message = "The product list on the sale cannot be null")
+    @Size(min = 1 , message =  "The sale must contain products" )
     private List<Long> products;
+    @NotNull(message = "the user in the sale cannot be null ")
     private Long user;
+
     private Long id;
 
     public Long getId() {

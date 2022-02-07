@@ -14,7 +14,8 @@ public class Sale implements Serializable {
     private Long id;
 
 
-    @OneToMany(mappedBy = "id")
+    @OneToMany(mappedBy = "id" , fetch = FetchType.LAZY)
+    //tabla nueva
     private List<Product> products;
 
 

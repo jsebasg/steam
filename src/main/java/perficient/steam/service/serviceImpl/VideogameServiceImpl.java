@@ -3,11 +3,8 @@ package perficient.steam.service.serviceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import perficient.steam.domain.Videogame;
-import perficient.steam.domain.Videogame;
 import perficient.steam.dto.VideogameDto;
-import perficient.steam.dto.VideogameDto;
-import perficient.steam.exceptions.VideogameNotFoundException;
-import perficient.steam.exceptions.VideogameNotFoundException;
+import perficient.steam.exceptions.NotFoundException;
 import perficient.steam.repositories.VideogameRepository;
 import perficient.steam.service.VideogameService;
 
@@ -29,6 +26,8 @@ public class VideogameServiceImpl implements VideogameService {
         return videogameToVideogameDto(videogame);
     }
 
+
+
     @Override
     public Optional<VideogameDto> update(VideogameDto videogameDto, Long id) {
         Optional<Videogame> actualVideogame = videogameRepository.findById(id);
@@ -41,14 +40,14 @@ public class VideogameServiceImpl implements VideogameService {
             actualVideogame.get().setCompatibility(videogameDto.getCompatibility());
             return Optional.of(videogameToVideogameDto(actualVideogame.get()));
         }
-        throw new VideogameNotFoundException("VIDEOGAME NOT FOUND EXCEPTION");
+        throw new NotFoundException("VIDEOGAME NOT FOUND EXCEPTION");
     }
 
     @Override
     public Optional<VideogameDto> findById(Long id) {
         Optional<Videogame> videogame =videogameRepository.findById(id);
         if(videogame.isPresent()) return Optional.of(videogameToVideogameDto(videogame.get()));
-        throw new VideogameNotFoundException("CONSOLE NOT FOUND EXCEPTION");
+        throw new NotFoundException("CONSOLE NOT FOUND EXCEPTION");
     }
 
     @Override
@@ -66,7 +65,7 @@ public class VideogameServiceImpl implements VideogameService {
             videogameRepository.deleteById(id);
             return true;
         }
-        return false;
+        throw new NotFoundException("CONSOLE NOT FOUND EXCEPTION");
     }
 
     private VideogameDto videogameToVideogameDto(Videogame videogame){
