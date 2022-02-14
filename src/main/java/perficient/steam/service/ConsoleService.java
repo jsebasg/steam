@@ -12,4 +12,5 @@ public interface ConsoleService {
     Optional<ConsoleDto> findById(Long id );
     List<ConsoleDto> getAll();
     Boolean deleteById( Long id ) throws Exception;
+    public ConsoleDto consoleToConsoleDto(Console console);
 }

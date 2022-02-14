@@ -68,7 +68,7 @@ public class VideogameServiceImpl implements VideogameService {
         throw new NotFoundException("CONSOLE NOT FOUND EXCEPTION");
     }
 
-    private VideogameDto videogameToVideogameDto(Videogame videogame){
+    public VideogameDto videogameToVideogameDto(Videogame videogame){
         VideogameDto videogameDto = new VideogameDto();
         videogameDto.setId(videogame.getId());
         videogameDto.setDescription(videogame.getDescription());

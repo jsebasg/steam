@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "videogames")
 public class Videogame extends Product {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)

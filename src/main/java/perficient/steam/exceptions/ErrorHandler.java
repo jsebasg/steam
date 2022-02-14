@@ -1,6 +1,8 @@
 package perficient.steam.exceptions;
 
 
+import org.springframework.core.NestedExceptionUtils;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +28,11 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = { MethodArgumentTypeMismatchException.class })
     protected ResponseEntity<Object> handleNotFound(MethodArgumentTypeMismatchException ex, WebRequest request) {
         return buildResponseEntity(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage()));
+    }
+    @ExceptionHandler(value = { DataIntegrityViolationException.class})
+    protected ResponseEntity<Object> handleNotFound(DataIntegrityViolationException ex, WebRequest request) {
+
+        return buildResponseEntity(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, NestedExceptionUtils.getMostSpecificCause(ex).getMessage()));
     }
 
     @Override

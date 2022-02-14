@@ -19,6 +19,15 @@ public class ConsoleDto {
 
     private Long id;
 
+    public ConsoleDto() {}
+
+    public ConsoleDto(String name, BigDecimal price, double discount, String description) {
+        this.name = name;
+        this.price = price;
+        this.discount = discount;
+        this.description = description;
+    }
+
     public Long getId() {
         return id;
     }

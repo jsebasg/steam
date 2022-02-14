@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
         throw new NotFoundException("USER NOT FOUND EXCEPTION");
     }
 
-    private UserDto userToUserDto(User user){
+    public UserDto userToUserDto(User user){
         UserDto userDto = new UserDto();
         userDto.setId(user.getId());
         userDto.setEmail(user.getEmail());

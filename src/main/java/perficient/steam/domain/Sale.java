@@ -8,6 +8,7 @@ import java.util.List;
 
 
 @Entity
+@Table(name = "sales")
 public class Sale implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -80,5 +81,7 @@ public class Sale implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
+
+
 
 }

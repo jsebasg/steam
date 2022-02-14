@@ -71,7 +71,7 @@ public class SaleServiceImpl implements SaleService {
         }
         throw  new NotFoundException("SALE NOT FOUND EXCEPTION");
     }
-    private SaleDto saleToSaleDto(Sale sale){
+    public SaleDto saleToSaleDto(Sale sale){
 
         SaleDto saleDto = new SaleDto();
         List<Long> products = new ArrayList<>();

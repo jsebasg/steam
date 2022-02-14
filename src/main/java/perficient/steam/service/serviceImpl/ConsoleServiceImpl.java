@@ -19,6 +19,7 @@ public class ConsoleServiceImpl implements ConsoleService {
 
     @Override
     public ConsoleDto create(ConsoleDto consoleDto) {
+
         Console console = new Console(consoleDto.getName() , consoleDto.getPrice() , consoleDto.getDiscount() , consoleDto.getDescription());
         consoleRepository.save(console);
         consoleDto.setId(console.getId());
@@ -32,7 +33,7 @@ public class ConsoleServiceImpl implements ConsoleService {
             actualConsole.get().setName(consoleDto.getName());
             actualConsole.get().setPrice(consoleDto.getPrice());
             actualConsole.get().setDiscount(consoleDto.getDiscount());
-            actualConsole.get().setDescription(consoleDto.getDescription()); 
+            actualConsole.get().setDescription(consoleDto.getDescription());
             return Optional.of(consoleToConsoleDto(actualConsole.get()));
         }
         throw new NotFoundException("CONSOLE NOT FOUND EXCEPTION");
@@ -63,7 +64,7 @@ public class ConsoleServiceImpl implements ConsoleService {
         throw new NotFoundException("CONSOLE NOT FOUND EXCEPTION ");
     }
 
-    private ConsoleDto consoleToConsoleDto(Console console){
+    public ConsoleDto consoleToConsoleDto(Console console){
         ConsoleDto consoleDto = new ConsoleDto();
         consoleDto.setId(console.getId());
         consoleDto.setDescription(console.getDescription());
@@ -72,6 +73,7 @@ public class ConsoleServiceImpl implements ConsoleService {
         consoleDto.setPrice(console.getPrice());
         return consoleDto;
     }
+
 
 
 }
