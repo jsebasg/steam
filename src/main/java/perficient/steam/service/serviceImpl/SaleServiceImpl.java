@@ -5,11 +5,13 @@ import org.springframework.stereotype.Service;
 import perficient.steam.domain.Sale;
 import perficient.steam.domain.Product;
 import perficient.steam.domain.User;
+import perficient.steam.dto.ConsoleDto;
 import perficient.steam.dto.SaleDto;
 import perficient.steam.exceptions.NotFoundException;
 import perficient.steam.repositories.ProductRepository;
 import perficient.steam.repositories.SaleRepository;
 import perficient.steam.repositories.UserRepository;
+import perficient.steam.repositories.impl.SaleRepositoryImpl;
 import perficient.steam.service.SaleService;
 
 import java.time.LocalDateTime;
@@ -18,16 +20,19 @@ import java.util.*;
 @Service
 public class SaleServiceImpl implements SaleService {
     @Autowired
-    private SaleRepository saleRepository;
+    private SaleRepositoryImpl saleRepository;
     @Autowired
     private ProductRepository productRepository;
     @Autowired
     private UserRepository userRepository;
     public SaleDto create(SaleDto saleDto) {
-
         Sale sale = new Sale(getProducts(saleDto) , getUser(saleDto) , LocalDateTime.now());
+        Long id = saleRepository.count() +1;
+        sale.setId(id);
         saleRepository.save(sale);
-        saleDto.setId(sale.getId());
+        saleDto.setId(id);
+        saleDto.setTotal(sale.getTotal());
+        saleDto.setDate(sale.getDate());
         return saleDto;
     }
 
@@ -49,6 +54,13 @@ public class SaleServiceImpl implements SaleService {
     }
 
     @Override
+    public List<SaleDto> getAllByPage(int actualPage, int totalRowsPerPage) {
+        List<SaleDto> sales = new ArrayList<>();
+        saleRepository.findAllPaginated(actualPage, totalRowsPerPage).forEach(s -> sales.add(saleToSaleDto(s)));
+        return sales ;
+    }
+
+    @Override
     public Boolean deleteById(Long id){
         Optional<Sale> actualSale = saleRepository.findById(id);
         if(actualSale.isPresent()) {
@@ -66,7 +78,7 @@ public class SaleServiceImpl implements SaleService {
         if(actualSale.isPresent()) {
             actualSale.get().setUser(getUser(saleDto));
             actualSale.get().setUser(getUser(saleDto));
-
+            saleRepository.update(actualSale.get());
             return Optional.of(saleToSaleDto(actualSale.get()));
         }
         throw  new NotFoundException("SALE NOT FOUND EXCEPTION");
@@ -75,25 +87,28 @@ public class SaleServiceImpl implements SaleService {
 
         SaleDto saleDto = new SaleDto();
         List<Long> products = new ArrayList<>();
-        sale.getProducts().forEach(s -> products.add(s.getId()));
+
         saleDto.setId(sale.getId());
-        saleDto.setProducts( products);
+        saleDto.setProducts( sale.getProducts().getId());
         saleDto.setUser(sale.getUser().getId());
+        saleDto.setTotal(sale.getTotal());
+        saleDto.setDate(sale.getDate());
 
         return saleDto;
     }
 
-    private List<Product> getProducts(SaleDto saleDto){
+    private Product getProducts(SaleDto saleDto){
 
-        List<Product> products = new ArrayList<>();
 
-        saleDto.getProducts().forEach( s -> {
-            if(productRepository.existsById(s)){
-                products.add(productRepository.findById(s).get());
-            }
-        });
+        if(productRepository.existsById(saleDto.getProducts())){
+            return productRepository.findById(saleDto.getProducts()).get();
+        }
+        else {
+            throw new NotFoundException("PRODUCT NOT FOUND ON SALE");
+        }
 
-        return products;
+
+
     }
     private User getUser(SaleDto saleDto){
 
@@ -104,7 +119,6 @@ public class SaleServiceImpl implements SaleService {
         }else {
             throw new NotFoundException("USER NOT FOUND ON SALE");
         }
-
         return user;
     }
 

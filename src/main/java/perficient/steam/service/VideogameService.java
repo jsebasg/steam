@@ -3,6 +3,7 @@ package perficient.steam.service;
 
 
 import perficient.steam.domain.Videogame;
+import perficient.steam.dto.UserDto;
 import perficient.steam.dto.VideogameDto;
 
 import java.util.List;
@@ -14,4 +15,5 @@ public interface VideogameService{
     List<VideogameDto> getAll();
     Boolean deleteById( Long id ) throws Exception;
     Optional<VideogameDto> update(VideogameDto videogameDto, Long id );
+    List<VideogameDto> getAllByPage(int actualPage , int totalRowsPerPage);
 }

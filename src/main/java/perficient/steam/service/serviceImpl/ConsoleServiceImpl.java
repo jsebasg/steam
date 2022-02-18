@@ -6,6 +6,7 @@ import perficient.steam.domain.Console;
 import perficient.steam.dto.ConsoleDto;
 import perficient.steam.exceptions.NotFoundException;
 import perficient.steam.repositories.ConsoleRepository;
+import perficient.steam.repositories.impl.ConsoleRepositoryImpl;
 import perficient.steam.service.ConsoleService;
 
 import java.util.ArrayList;
@@ -15,14 +16,18 @@ import java.util.Optional;
 @Service
 public class ConsoleServiceImpl implements ConsoleService {
     @Autowired
-    private ConsoleRepository consoleRepository;
+    private ConsoleRepositoryImpl consoleRepository;
+
+    public ConsoleServiceImpl(){}
 
     @Override
     public ConsoleDto create(ConsoleDto consoleDto) {
-
+        Long id = consoleRepository.count()+1;
         Console console = new Console(consoleDto.getName() , consoleDto.getPrice() , consoleDto.getDiscount() , consoleDto.getDescription());
+        console.setId(id);
         consoleRepository.save(console);
-        consoleDto.setId(console.getId());
+        consoleDto.setId(id);
+
         return consoleDto;
     }
 
@@ -34,6 +39,7 @@ public class ConsoleServiceImpl implements ConsoleService {
             actualConsole.get().setPrice(consoleDto.getPrice());
             actualConsole.get().setDiscount(consoleDto.getDiscount());
             actualConsole.get().setDescription(consoleDto.getDescription());
+            consoleRepository.update(actualConsole.get());
             return Optional.of(consoleToConsoleDto(actualConsole.get()));
         }
         throw new NotFoundException("CONSOLE NOT FOUND EXCEPTION");
@@ -52,6 +58,15 @@ public class ConsoleServiceImpl implements ConsoleService {
         consoleRepository.findAll().forEach(s -> consoles.add(consoleToConsoleDto(s)));
         return consoles ;
     }
+    @Override
+    public List<ConsoleDto> getAllByPage(int actualPage, int totalRowsPerPage) {
+        List<ConsoleDto> consoles = new ArrayList<>();
+        consoleRepository.findAllPaginated(actualPage, totalRowsPerPage).forEach(s -> consoles.add(consoleToConsoleDto(s)));
+        return consoles ;
+    }
+
+
+
 
     @Override
     public Boolean deleteById(Long id){
@@ -73,7 +88,6 @@ public class ConsoleServiceImpl implements ConsoleService {
         consoleDto.setPrice(console.getPrice());
         return consoleDto;
     }
-
 
 
 }

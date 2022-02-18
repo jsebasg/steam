@@ -17,7 +17,7 @@ public class Sale implements Serializable {
 
     @OneToMany(mappedBy = "id" , fetch = FetchType.LAZY)
     //tabla nueva
-    private List<Product> products;
+    private Product products;
 
 
     @ManyToOne
@@ -33,21 +33,21 @@ public class Sale implements Serializable {
     public Sale() {
     }
 
-    public Sale(List<Product> products, User user, LocalDateTime date) {
+    public Sale(Product products, User user, LocalDateTime date) {
         this.products = products;
 
         this.user = user;
         this.date = date;
-        total = new BigDecimal(0) ;
-        products.stream().forEach(i -> total = total.add(i.getPrice()));
+        total = products.getPrice();
+
     }
 
 
-    public List<Product> getProducts() {
+    public Product getProducts() {
         return products;
     }
 
-    public void setProducts(List<Product> products) {
+    public void setProducts(Product products) {
         this.products = products;
     }
 

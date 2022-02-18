@@ -3,18 +3,19 @@ package perficient.steam.dto;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+
 import java.math.BigDecimal;
 
 public class ConsoleDto {
-    @NotNull(message = "The name of the Videogame cannot be null")
+    @NotNull(message = "The name of the Console cannot be null")
     private String name;
-    @NotNull(message = "The name of the Videogame cannot be null")
+    @NotNull(message = "The name of the Console cannot be null")
     @Min(value = 0L, message = "The value must be positive")
     private BigDecimal price;
-    @Min(value = 0L, message = "The discount of the Videogame must be positive")
-    @Max(value = 1 , message = "The discount of the Videogame must be < 1")
+    @Min(value = 0L, message = "The discount of the Console must be positive")
+    @Max(value = 1 , message = "The discount of the Console must be < 1")
     private double discount;
-    @NotNull(message = "The description of the Videogame cannot be null ")
+    @NotNull(message = "The description of the Console cannot be null ")
     private String description;
 
     private Long id;

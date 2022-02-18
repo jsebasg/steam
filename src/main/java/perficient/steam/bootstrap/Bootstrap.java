@@ -1,7 +1,9 @@
 package perficient.steam.bootstrap;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import perficient.steam.domain.*;
 import perficient.steam.repositories.*;
@@ -16,7 +18,7 @@ import java.util.ArrayList;
 
 @Component
 public class Bootstrap implements CommandLineRunner {
-    ConsoleRepository consoleRepository;
+    /*ConsoleRepository consoleRepository;
     VideogameRepository videogameRepository;
     UserRepository userRepository;
     SaleRepository saleRepository;
@@ -26,43 +28,50 @@ public class Bootstrap implements CommandLineRunner {
         this.videogameRepository = videogameRepository;
         this.userRepository = userRepository;
         this.saleRepository = saleRepository;
-    }
+    }*/
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Override
     public void run(String... args) throws Exception {
-        /*//Administrator admin = new Administrator(1234567,"jose pepe" , "+57 000 0000000" , "M");
-        ArrayList<Videogame> games = new ArrayList<Videogame>();
-        ArrayList<Console> consoles = new ArrayList<Console>();
+        String product = "CREATE TABLE IF NOT EXISTS product (" +
+                "dtype varchar(31) NOT NULL," +
+                "id int8 NOT NULL," +
+                "description varchar(255) NULL," +
+                "discount float8 NOT NULL," +
+                "name varchar(255) NOT NULL," +
+                "price numeric(19, 2) NOT NULL," +
+                "category varchar(255) NOT NULL," +
+                "compatibility varchar(255) NOT NULL," +
+                "CONSTRAINT product_pkey PRIMARY KEY (id))";
+        String user = "CREATE TABLE IF NOT EXISTS users (" +
+                "id int8 NOT NULL," +
+                "contact_number varchar(255) NOT NULL," +
+                "email varchar(255) NOT NULL," +
+                "gender varchar(255) NOT NULL," +
+                "identification_card int4 NOT NULL," +
+                "name varchar(255) NOT NULL," +
+                "password varchar(255) NOT NULL," +
+                "CONSTRAINT uk_email UNIQUE (email)," +
+                "CONSTRAINT uk_identification_card UNIQUE (identification_card)," +
+                "CONSTRAINT users_pkey PRIMARY KEY (id)" +
+                ");";
 
-        ArrayList<User> users = new ArrayList<User>();
-        for(int i = 0 ; i< 4 ; i++ ){
+        String sale = "CREATE TABLE IF NOT EXISTS sale (" +
+                "id int8 NOT NULL," +
+                "date timestamp NOT NULL," +
+                "total numeric(19, 2) NOT NULL," +
+                "user_id int8 NOT NULL," +
+                "product_id int8 NOT NULL," +
+                "CONSTRAINT sales_pkey PRIMARY KEY (id)," +
+                "CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id)," +
+                "CONSTRAINT fk_product_id FOREIGN KEY (product_id) REFERENCES product(id)" +
+                ");";
 
-            games.add(new Videogame("game_" + i, new BigDecimal(1000) ,0, "description" , "FPS" ));
-            consoles.add(new Console("console_" + i , new BigDecimal(1000) , 0 , "description"));
-
-        }
-        users.add(new User(124356789,"user_" + 0 ,"109284309123" , "F" , "a@mail.com", "" ));
-
-        List<Product> products = new ArrayList<>();
-        products.addAll(games);
-        products.addAll(consoles);
-
-
-        Sale sale = new Sale(products , users.get(0), LocalDateTime.now());
-
-
-
-
-        videogameRepository.saveAll(games);
-        consoleRepository.saveAll(consoles);
-        userRepository.saveAll(users);
-        saleRepository.save(sale);
-        */
-
-
-
-
-
+        jdbcTemplate.execute(product);
+        jdbcTemplate.execute(user);
+        jdbcTemplate.execute(sale);
 
 
     }

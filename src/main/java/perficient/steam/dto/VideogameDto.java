@@ -1,6 +1,6 @@
 package perficient.steam.dto;
 
-import javax.persistence.ElementCollection;
+
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.List;
@@ -19,8 +19,8 @@ public class VideogameDto {
     @NotNull(message = "The category of the Videogame cannot be null")
     private String category ;
     @NotNull(message = "The compatibility of the Videogame cannot be null")
-    @Size(min = 1 , message = "The compatibility must contain at least 1 element")
-    private List<String> compatibility;
+
+    private String compatibility;
 
     private Long id;
 
@@ -72,11 +72,11 @@ public class VideogameDto {
         this.category = category;
     }
 
-    public List<String> getCompatibility() {
+    public String getCompatibility() {
         return compatibility;
     }
 
-    public void setCompatibility(List<String> compatibility) {
+    public void setCompatibility(String compatibility) {
         this.compatibility = compatibility;
     }
 }

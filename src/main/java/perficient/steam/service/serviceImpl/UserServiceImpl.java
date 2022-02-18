@@ -6,6 +6,7 @@ import perficient.steam.domain.User;
 import perficient.steam.dto.UserDto;
 import perficient.steam.exceptions.NotFoundException;
 import perficient.steam.repositories.UserRepository;
+import perficient.steam.repositories.impl.UserRepositoryImpl;
 import perficient.steam.service.UserService;
 
 import java.util.ArrayList;
@@ -15,14 +16,16 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
-    private UserRepository userRepository;
+    private UserRepositoryImpl userRepository;
 
     @Override
     public UserDto create(UserDto userDto) {
 
         User user = new User(userDto.getIdentificationCard() , userDto.getName() , userDto.getContactNumber() , userDto.getGender() , userDto.getEmail() , userDto.getPassword());
+        Long id = userRepository.count() + 1;
+        user.setId(id);
         userRepository.save(user);
-        userDto.setId(user.getId());
+        userDto.setId(id);
         return userToUserDto(user);
 
 
@@ -37,9 +40,17 @@ public class UserServiceImpl implements UserService {
             actualUser.get().setName(userDto.getName());
             actualUser.get().setIdentificationCard(userDto.getIdentificationCard());
             actualUser.get().setPassword(userDto.getPassword());
+            userRepository.update(actualUser.get());
             return Optional.of(userToUserDto(actualUser.get()));
         }
         throw  new NotFoundException("USER NOT FOUND EXCEPTION");
+    }
+
+    @Override
+    public List<UserDto> getAllByPage(int actualPage, int totalRowsPerPage) {
+        List<UserDto> users = new ArrayList<>();
+        userRepository.findAllPaginated(actualPage, totalRowsPerPage).forEach(s -> users.add(userToUserDto(s)));
+        return users ;
     }
 
 

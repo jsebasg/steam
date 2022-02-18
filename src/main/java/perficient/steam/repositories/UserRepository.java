@@ -1,10 +1,22 @@
 package perficient.steam.repositories;
 
+
+import perficient.steam.domain.Console;
+import perficient.steam.domain.Sale;
 import perficient.steam.domain.User;
-import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface UserRepository extends CrudRepository<User , Long> {
-    public List<User> findByGender(String gender);
+public interface UserRepository {
+    boolean existsById(Long s);
+    void save(User user);
+    Optional<User> findById(Long id);
+    List<User> findAll();
+    void deleteById(Long id);
+    void update(User user);
+    public Long count();
+    List<User> findAllPaginated(int actualPage , int totalRowsPerPage);
+    List<User> queryToList(String sql);
+
 }

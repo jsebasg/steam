@@ -6,6 +6,7 @@ import perficient.steam.domain.Videogame;
 import perficient.steam.dto.VideogameDto;
 import perficient.steam.exceptions.NotFoundException;
 import perficient.steam.repositories.VideogameRepository;
+import perficient.steam.repositories.impl.VideogameRepositoryImpl;
 import perficient.steam.service.VideogameService;
 
 import java.util.ArrayList;
@@ -15,14 +16,16 @@ import java.util.Optional;
 @Service
 public class VideogameServiceImpl implements VideogameService {
     @Autowired
-    private VideogameRepository videogameRepository;
+    private VideogameRepositoryImpl videogameRepository;
 
     @Override
     public VideogameDto create(VideogameDto videogameDto) {
 
         Videogame videogame = new Videogame(videogameDto.getName() , videogameDto.getPrice() , videogameDto.getDiscount() , videogameDto.getDescription() ,videogameDto.getCategory() , videogameDto.getCompatibility());
+        Long id = videogameRepository.count() + 1 ;
+        videogame.setId(id);
         videogameRepository.save(videogame);
-        videogameDto.setId(videogame.getId());
+        videogameDto.setId(id);
         return videogameToVideogameDto(videogame);
     }
 
@@ -38,9 +41,17 @@ public class VideogameServiceImpl implements VideogameService {
             actualVideogame.get().setDescription(videogameDto.getDescription());
             actualVideogame.get().setCategory(videogameDto.getCategory());
             actualVideogame.get().setCompatibility(videogameDto.getCompatibility());
+            videogameRepository.update(actualVideogame.get());
             return Optional.of(videogameToVideogameDto(actualVideogame.get()));
         }
         throw new NotFoundException("VIDEOGAME NOT FOUND EXCEPTION");
+    }
+
+    @Override
+    public List<VideogameDto> getAllByPage(int actualPage, int totalRowsPerPage) {
+        List<VideogameDto> videogames = new ArrayList<>();
+        videogameRepository.findAllPaginated(actualPage,totalRowsPerPage).forEach(s -> videogames.add(videogameToVideogameDto(s)));
+        return videogames ;
     }
 
     @Override

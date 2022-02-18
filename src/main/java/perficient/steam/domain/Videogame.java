@@ -14,24 +14,24 @@ public class Videogame extends Product {
     @Column
     private String category ;
 
-    @ElementCollection
-    private List<String> compatibility;
+    @Column
+    private String compatibility;
 
     public Videogame() {
     }
 
-    public Videogame(String name, BigDecimal price, double discount, String description, String category , List<String> compatibility) {
+    public Videogame(String name, BigDecimal price, double discount, String description, String category , String compatibility) {
         super(name, price, discount, description);
         this.category = category;
         this.compatibility = compatibility;
     }
 
-    public List<String> getCompatibility() {
+    public String getCompatibility() {
 
         return compatibility;
     }
 
-    public void setCompatibility(List<String> compatibility) {
+    public void setCompatibility(String compatibility) {
         this.compatibility = compatibility;
     }
 

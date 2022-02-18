@@ -2,9 +2,11 @@ package perficient.steam.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import perficient.steam.dto.SaleDto;
 import perficient.steam.dto.UserDto;
 import perficient.steam.service.serviceImpl.UserServiceImpl;
 import javax.validation.Valid;
@@ -18,7 +20,7 @@ public class UserController{
     UserServiceImpl userServiceImpl;
 
     @GetMapping
-    public ResponseEntity<List<UserDto>> getAll() {
+    public  ResponseEntity<List<UserDto>> getAll()  {
         return new ResponseEntity<List<UserDto>>(userServiceImpl.getAll() , HttpStatus.OK );
     }
 
@@ -26,6 +28,10 @@ public class UserController{
     public ResponseEntity<UserDto> findById(@PathVariable  long id) {
         Optional<UserDto> user = userServiceImpl.findById(id);
         return user.isPresent() ? new ResponseEntity<UserDto>( user.get(),HttpStatus.OK):new ResponseEntity<UserDto>(HttpStatus.BAD_REQUEST);
+    }
+    @GetMapping("/page/{num}")
+    public ResponseEntity<List<UserDto>> getAllByPage(@PathVariable  int num) {
+        return new ResponseEntity<List<UserDto>>(userServiceImpl.getAllByPage(num - 1 , 3) , HttpStatus.OK );
     }
 
     @PostMapping

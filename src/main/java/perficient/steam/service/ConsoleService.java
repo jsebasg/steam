@@ -13,4 +13,5 @@ public interface ConsoleService {
     List<ConsoleDto> getAll();
     Boolean deleteById( Long id ) throws Exception;
     public ConsoleDto consoleToConsoleDto(Console console);
+    List<ConsoleDto> getAllByPage(int actualPage , int totalRowsPerPage);
 }

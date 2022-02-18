@@ -15,10 +15,15 @@ import java.util.Optional;
 public class ConsoleController{
     @Autowired
     ConsoleServiceImpl consoleServiceImpl;
+    //int actualPage , int maxNumber , int totalPages
 
     @GetMapping
     public ResponseEntity<List<ConsoleDto>> getAll() {
         return new ResponseEntity<List<ConsoleDto>>(consoleServiceImpl.getAll() , HttpStatus.OK );
+    }
+    @GetMapping("/page/{num}")
+    public ResponseEntity<List<ConsoleDto>> getAllByPage(@PathVariable  int num) {
+        return new ResponseEntity<List<ConsoleDto>>(consoleServiceImpl.getAllByPage(num - 1 , 3) , HttpStatus.OK );
     }
 
     @GetMapping("/{id}")
@@ -28,7 +33,7 @@ public class ConsoleController{
     }
 
     @PostMapping
-    public ResponseEntity<ConsoleDto> create(@Valid  @RequestBody ConsoleDto consoleDto) {
+    public ResponseEntity<ConsoleDto> create(@Valid @RequestBody ConsoleDto consoleDto) {
         return new ResponseEntity<ConsoleDto>(consoleServiceImpl.create(consoleDto) , HttpStatus.OK);
     }
 
