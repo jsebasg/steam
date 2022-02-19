@@ -3,6 +3,7 @@ package perficient.steam.repositories.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import perficient.steam.domain.RoleEnum;
 import perficient.steam.domain.Sale;
 import perficient.steam.domain.User;
 import perficient.steam.repositories.UserRepository;
@@ -24,12 +25,12 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void save(User user) {
-        jdbcTemplate.update("INSERT INTO users(id, contact_number, email , gender , identification_card , name , password ) VALUES (?,?,?,?,?,?,? ) ", user.getId(), user.getContactNumber(), user.getEmail(), user.getGender() , user.getIdentificationCard() , user.getName() , user.getPassword());
+        jdbcTemplate.update("INSERT INTO users(id, contact_number, email , gender , identification_card , name , role , password_hash) VALUES (?,?,?,?,?,?,?,? ) ", user.getId(), user.getContactNumber(), user.getEmail(), user.getGender() , user.getIdentificationCard() , user.getName() , user.getRoleEnum().equals(RoleEnum.ADMIN) ? 1 : 0, user.getPasswordHash());
     }
 
     @Override
     public void update(User user){
-        jdbcTemplate.update("UPDATE users SET  contact_number = ?, email = ? , gender = ? , identification_card = ? , name =? , password = ?   WHERE id ="+ user.getId() , user.getContactNumber(), user.getEmail(), user.getGender() , user.getIdentificationCard() , user.getName() , user.getPassword());
+        jdbcTemplate.update("UPDATE users SET  contact_number = ?, email = ? , gender = ? , identification_card = ? , name =? , role = ? , password_hash = ?  WHERE id ="+ user.getId() , user.getContactNumber(), user.getEmail(), user.getGender() , user.getIdentificationCard() , user.getName() ,  user.getRoleEnum().equals(RoleEnum.ADMIN) ? 1 : 0 , user.getPasswordHash());
     }
 
     @Override
@@ -46,7 +47,8 @@ public class UserRepositoryImpl implements UserRepository {
                                 rs.getString("contact_number"),
                                 rs.getString("gender"),
                                 rs.getString("email"),
-                                rs.getString("password"));
+                                rs.getInt("role") == 1 ? RoleEnum.ADMIN : RoleEnum.USER,
+                                rs.getString("password_hash"));
                         user.setId(rs.getLong("id"));
                         return user;
 
@@ -97,10 +99,33 @@ public class UserRepositoryImpl implements UserRepository {
                             rs.getString("contact_number"),
                             rs.getString("gender"),
                             rs.getString("email"),
-                            rs.getString("password"));
+                            rs.getInt("role") == 1 ? RoleEnum.ADMIN : RoleEnum.USER,
+                            rs.getString("password_hash"));
                     user.setId(rs.getLong("id"));
                     return user;
 
+                });
+    }
+    public User getByEmail(String email){
+        String sql = "SELECT * FROM users WHERE email = '" + email + "'";
+        return jdbcTemplate.queryForObject(
+                sql,
+                (rs, rowNum) -> {
+                    if(! rs.wasNull()) {
+                        User user = new User(
+                                rs.getInt("identification_card"),
+                                rs.getString("name"),
+                                rs.getString("contact_number"),
+                                rs.getString("gender"),
+                                rs.getString("email"),
+                                rs.getInt("role") == 1 ? RoleEnum.ADMIN : RoleEnum.USER,
+                                rs.getString("password_hash"));
+                        user.setId(rs.getLong("id"));
+                        return user;
+                    }
+                    else{
+                        return null;
+                    }
                 });
     }
 }

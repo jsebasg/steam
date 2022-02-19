@@ -14,4 +14,5 @@ public interface UserService {
     Boolean deleteById( Long id ) throws Exception;
     Optional<UserDto> update(UserDto userDto, Long id );
     List<UserDto> getAllByPage(int actualPage , int totalRowsPerPage);
+    User findByEmail(String email);
 }

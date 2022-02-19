@@ -1,7 +1,9 @@
 package perficient.steam.service.serviceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+import perficient.steam.domain.RoleEnum;
 import perficient.steam.domain.User;
 import perficient.steam.dto.UserDto;
 import perficient.steam.exceptions.NotFoundException;
@@ -9,6 +11,7 @@ import perficient.steam.repositories.UserRepository;
 import perficient.steam.repositories.impl.UserRepositoryImpl;
 import perficient.steam.service.UserService;
 
+import javax.management.relation.Role;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,15 +23,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto create(UserDto userDto) {
+        RoleEnum role = userDto.getRole() == 1? RoleEnum.ADMIN : RoleEnum.USER;
+        String passwordhash = BCrypt.hashpw(userDto.getPassword(), BCrypt.gensalt()); // password Encryption
+        User user = new User(userDto.getIdentificationCard() , userDto.getName() , userDto.getContactNumber() , userDto.getGender() , userDto.getEmail() , role , passwordhash);
 
-        User user = new User(userDto.getIdentificationCard() , userDto.getName() , userDto.getContactNumber() , userDto.getGender() , userDto.getEmail() , userDto.getPassword());
         Long id = userRepository.count() + 1;
         user.setId(id);
         userRepository.save(user);
         userDto.setId(id);
+        userDto.setPasswordHash(passwordhash);
         return userToUserDto(user);
-
-
     }
 
     @Override
@@ -39,7 +43,8 @@ public class UserServiceImpl implements UserService {
             actualUser.get().setGender(userDto.getGender());
             actualUser.get().setName(userDto.getName());
             actualUser.get().setIdentificationCard(userDto.getIdentificationCard());
-            actualUser.get().setPassword(userDto.getPassword());
+            actualUser.get().setRoleEnum(userDto.getRole() == 1? RoleEnum.ADMIN : RoleEnum.USER);
+            actualUser.get().setPasswordHash(userDto.getPasswordHash());
             userRepository.update(actualUser.get());
             return Optional.of(userToUserDto(actualUser.get()));
         }
@@ -86,8 +91,12 @@ public class UserServiceImpl implements UserService {
         userDto.setGender(user.getGender());
         userDto.setIdentificationCard(user.getIdentificationCard());
         userDto.setName(user.getName());
-        userDto.setPassword(user.getPassword());
+        userDto.setRole(user.getRoleEnum().equals("ADMIN")? 0 : 1 );
+        userDto.setPasswordHash(user.getPasswordHash());
         return userDto;
     }
-
+    @Override
+    public User findByEmail(String email){
+        return userRepository.getByEmail(email);
+    }
 }

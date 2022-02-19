@@ -1,5 +1,7 @@
 package perficient.steam.dto;
 
+import perficient.steam.domain.RoleEnum;
+
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -18,6 +20,8 @@ public class ConsoleDto {
     @NotNull(message = "The description of the Console cannot be null ")
     private String description;
 
+    private int role;
+
     private Long id;
 
     public ConsoleDto() {}
@@ -27,7 +31,10 @@ public class ConsoleDto {
         this.price = price;
         this.discount = discount;
         this.description = description;
+
     }
+
+
 
     public Long getId() {
         return id;

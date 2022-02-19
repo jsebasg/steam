@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import perficient.steam.dto.ConsoleDto;
 import perficient.steam.service.serviceImpl.ConsoleServiceImpl;
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
@@ -33,17 +34,20 @@ public class ConsoleController{
     }
 
     @PostMapping
+    @RolesAllowed("ADMIN")
     public ResponseEntity<ConsoleDto> create(@Valid @RequestBody ConsoleDto consoleDto) {
         return new ResponseEntity<ConsoleDto>(consoleServiceImpl.create(consoleDto) , HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
+    @RolesAllowed("ADMIN")
     public ResponseEntity<ConsoleDto> update(@Valid @RequestBody ConsoleDto consoleDto, @PathVariable long id) {
         Optional<ConsoleDto> console = consoleServiceImpl.findById(id);
         return console.isPresent() ? new ResponseEntity<ConsoleDto>( consoleServiceImpl.update(consoleDto,id).get(),HttpStatus.OK):new ResponseEntity<ConsoleDto>(HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping("/{id}")
+    @RolesAllowed("ADMIN")
     public ResponseEntity delete(@PathVariable long id) throws Exception {
         //ResponseEntity.ok()
         return consoleServiceImpl.deleteById(id) ?  new ResponseEntity(  HttpStatus.OK) : new ResponseEntity<Boolean>(  HttpStatus.BAD_REQUEST);

@@ -52,7 +52,8 @@ public class Bootstrap implements CommandLineRunner {
                 "gender varchar(255) NOT NULL," +
                 "identification_card int4 NOT NULL," +
                 "name varchar(255) NOT NULL," +
-                "password varchar(255) NOT NULL," +
+                "role int8 NOT NULL, " +
+                "password_hash varchar(255) NOT NULL," +
                 "CONSTRAINT uk_email UNIQUE (email)," +
                 "CONSTRAINT uk_identification_card UNIQUE (identification_card)," +
                 "CONSTRAINT users_pkey PRIMARY KEY (id)" +
@@ -72,7 +73,6 @@ public class Bootstrap implements CommandLineRunner {
         jdbcTemplate.execute(product);
         jdbcTemplate.execute(user);
         jdbcTemplate.execute(sale);
-
 
     }
 }

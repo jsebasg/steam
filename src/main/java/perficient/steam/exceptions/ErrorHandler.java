@@ -25,6 +25,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
     }
 
 
+
     @ExceptionHandler(value = { MethodArgumentTypeMismatchException.class })
     protected ResponseEntity<Object> handleNotFound(MethodArgumentTypeMismatchException ex, WebRequest request) {
         return buildResponseEntity(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage()));

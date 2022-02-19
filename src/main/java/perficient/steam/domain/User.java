@@ -29,19 +29,43 @@ public class User {
     @OneToMany(mappedBy="user" , fetch=FetchType.LAZY)
     private List<Sale> sales;
 
+
+
     @Column
-    private String password;
+    private RoleEnum roleEnum;
+
+    @Column
+    private String passwordHash;
+
+    public RoleEnum getRoleEnum() {
+        return roleEnum;
+    }
+
+    public void setRoleEnum(RoleEnum roleEnum) {
+        this.roleEnum = roleEnum;
+    }
 
     public User() {
     }
 
-    public User(int identificationCard , String name, String contactNumber, String gender, String email , String password){
+    public User(int identificationCard , String name, String contactNumber, String gender, String email , RoleEnum roleEnum , String passwordHash){
         this.contactNumber = contactNumber;
         this.identificationCard = identificationCard;
         this.gender = gender;
         this.name = name ;
         this.email = email;
-        this.password  = password;
+
+        this.roleEnum = roleEnum;
+        this.passwordHash = passwordHash;
+
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
 
     public String getEmail() {
@@ -100,11 +124,4 @@ public class User {
         this.sales = sales;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }
