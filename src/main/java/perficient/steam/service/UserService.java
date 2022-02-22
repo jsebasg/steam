@@ -15,4 +15,5 @@ public interface UserService {
     Optional<UserDto> update(UserDto userDto, Long id );
     List<UserDto> getAllByPage(int actualPage , int totalRowsPerPage);
     User findByEmail(String email);
+    UserDto userToUserDto(User user);
 }

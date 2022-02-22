@@ -49,7 +49,6 @@ public class ConsoleController{
     @DeleteMapping("/{id}")
     @RolesAllowed("ADMIN")
     public ResponseEntity delete(@PathVariable long id) throws Exception {
-        //ResponseEntity.ok()
         return consoleServiceImpl.deleteById(id) ?  new ResponseEntity(  HttpStatus.OK) : new ResponseEntity<Boolean>(  HttpStatus.BAD_REQUEST);
     }
     

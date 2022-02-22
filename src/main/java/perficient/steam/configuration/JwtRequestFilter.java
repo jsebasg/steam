@@ -48,6 +48,7 @@ public class JwtRequestFilter
 
         if ( HttpMethod.OPTIONS.name().equals( request.getMethod() ) )
         {
+
             response.setStatus( HttpServletResponse.SC_OK );
             filterChain.doFilter( request, response );
         }
@@ -85,6 +86,10 @@ public class JwtRequestFilter
 
                 }
                 filterChain.doFilter(request, response);
+
+            }
+            catch (ServletException e){
+                response.sendError( HttpStatus.BAD_REQUEST.value(), e.getMessage() );
             }
             catch ( MalformedJwtException e )
             {

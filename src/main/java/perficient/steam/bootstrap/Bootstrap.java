@@ -18,17 +18,6 @@ import java.util.ArrayList;
 
 @Component
 public class Bootstrap implements CommandLineRunner {
-    /*ConsoleRepository consoleRepository;
-    VideogameRepository videogameRepository;
-    UserRepository userRepository;
-    SaleRepository saleRepository;
-
-    public Bootstrap(ConsoleRepository consoleRepository, VideogameRepository videogameRepository, UserRepository userRepository, SaleRepository saleRepository) {
-        this.consoleRepository = consoleRepository;
-        this.videogameRepository = videogameRepository;
-        this.userRepository = userRepository;
-        this.saleRepository = saleRepository;
-    }*/
 
     @Autowired
     private JdbcTemplate jdbcTemplate;

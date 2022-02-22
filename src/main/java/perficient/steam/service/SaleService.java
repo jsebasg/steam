@@ -14,4 +14,5 @@ public interface SaleService {
     Boolean deleteById( Long id ) throws Exception;
     Optional<SaleDto> update(SaleDto saleDto, Long id );
     List<SaleDto> getAllByPage(int actualPage , int totalRowsPerPage);
+    SaleDto saleToSaleDto(Sale sale);
 }

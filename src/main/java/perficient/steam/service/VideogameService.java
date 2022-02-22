@@ -16,4 +16,5 @@ public interface VideogameService{
     Boolean deleteById( Long id ) throws Exception;
     Optional<VideogameDto> update(VideogameDto videogameDto, Long id );
     List<VideogameDto> getAllByPage(int actualPage , int totalRowsPerPage);
+    VideogameDto videogameToVideogameDto(Videogame videogame);
 }

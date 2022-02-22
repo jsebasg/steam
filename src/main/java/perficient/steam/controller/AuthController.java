@@ -44,10 +44,7 @@ public class AuthController
     public TokenDto login(@RequestBody LoginDto loginDto )
     {
         User user = userService.findByEmail(loginDto.getEmail());
-        System.out.println(user.getRoleEnum());
-        System.out.println(loginDto.getPassword());
-        System.out.println(user.getPasswordHash());
-        System.out.println(BCrypt.checkpw(loginDto.getPassword(), user.getPasswordHash()));
+
 
         if ( BCrypt.checkpw(loginDto.getPassword(), user.getPasswordHash() ) )
         {
@@ -60,23 +57,19 @@ public class AuthController
 
     }
 
-    private String generateToken( User user, Date expirationDate )
-    {
-        List<RoleEnum> m = new ArrayList<>();
-        m.add(user.getRoleEnum());
-        String a = Jwts.builder()
-                .setSubject( user.getId().toString() )
-                .claim( CLAIMS_ROLES_KEY,m )
-                .setIssuedAt(new Date() )
-                .setExpiration( expirationDate )
-                .signWith( SignatureAlgorithm.HS256, secret )
-                .compact();
-        System.out.println(a);
-        return a;
+    private String generateToken( User user, Date expirationDate ){
+        ArrayList<String> roles = new ArrayList<String>();
+        roles.add(user.getRoleEnum().toString());
+        return  Jwts.builder()
+            .setSubject( user.getId().toString() )
+            .claim( CLAIMS_ROLES_KEY,roles )
+            .setIssuedAt(new Date() )
+            .setExpiration( expirationDate )
+            .signWith( SignatureAlgorithm.HS256, secret )
+            .compact();
     }
 
-    private TokenDto generateTokenDto( User user )
-    {
+    private TokenDto generateTokenDto( User user ) {
         Calendar expirationDate = Calendar.getInstance();
         expirationDate.add( Calendar.MINUTE, TOKEN_DURATION_MINUTES );
         String token = generateToken( user, expirationDate.getTime() );
